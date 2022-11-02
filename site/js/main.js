@@ -1,22 +1,19 @@
-import  { initMap, updateUserPositionOn } from './map.js';
+import { initMap, updateUserPositionOn } from './map.js';
 import { initTreeInfoForm, showTreeDataInForm } from './tree-info-form.js';
 import { initToast, showToast } from './toast.js';
+import { downloadInventory, loadNotes, saveNotes } from './inventory.js';
 
 let app = {
   currentTree: null,
-  notes: JSON.parse(localStorage.getItem('notes') || '{}'),
+  notes: loadNotes(),
 };
 
 const loadOverlayEl = document.getElementById('load-overlay');
 const map = initMap();
 
-function downloadInventory() {
-  fetch('data/tree-inventory.geojson')
-  .then(resp => resp.json())
-  .then(data => {
-    map.treeLayer.addData(data);
-    loadOverlayEl.classList.add('hidden');
-  });
+function onInventoryLoadSuccess(data) {
+  map.treeLayer.addData(data);
+  loadOverlayEl.classList.add('hidden');
 }
 
 function onUserPositionSuccess(pos) {
@@ -39,7 +36,7 @@ function onSaveClicked(evt) {
   const treeId = app.currentTree.properties['OBJECTID'];
   app.notes[treeId] = note;
 
-  localStorage.setItem('notes', JSON.stringify(app.notes));
+  saveNotes(app.notes);
   showToast('Saved!', 'toast-success');
 }
 
@@ -61,6 +58,6 @@ initToast();
 initTreeInfoForm();
 setupGeolocationEvent();
 setupInteractionEvents();
-downloadInventory();
+downloadInventory(onInventoryLoadSuccess);
 
 window.app = app;
