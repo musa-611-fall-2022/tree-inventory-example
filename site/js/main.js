@@ -5,7 +5,7 @@ import { downloadInventory, loadNotes, saveNotes } from './inventory.js';
 
 let app = {
   currentTree: null,
-  notes: loadNotes(),
+  notes: {},
 };
 
 const loadOverlayEl = document.getElementById('load-overlay');
@@ -57,7 +57,11 @@ function setupInteractionEvents() {
 initToast();
 initTreeInfoForm();
 setupGeolocationEvent();
-setupInteractionEvents();
-downloadInventory(onInventoryLoadSuccess);
+
+loadNotes(notes => {
+  app.notes = notes;
+  setupInteractionEvents();
+  downloadInventory(onInventoryLoadSuccess);
+});
 
 window.app = app;
