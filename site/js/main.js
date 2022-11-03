@@ -57,11 +57,11 @@ function setupInteractionEvents() {
 initToast();
 initTreeInfoForm();
 setupGeolocationEvent();
+downloadInventory(onInventoryLoadSuccess);
 
 loadNotes(notes => {
   app.notes = notes;
   setupInteractionEvents();
-  downloadInventory(onInventoryLoadSuccess);
 });
 
 window.app = app;
