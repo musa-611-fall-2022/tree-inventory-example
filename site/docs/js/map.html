@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>map.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="inventory.html">
+                  js/inventory.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  js/main.js
+                </a>
+              
+                
+                <a class="source" href="map.html">
+                  js/map.js
+                </a>
+              
+                
+                <a class="source" href="toast.html">
+                  js/toast.js
+                </a>
+              
+                
+                <a class="source" href="tree-info-form.html">
+                  js/tree-info-form.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>map.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="sswrap ">
+                <a class="ss" href="#section-1">&#x00a7;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">function</span> <span class="hljs-title function_">onTreeClicked</span>(<span class="hljs-params">evt</span>) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(evt);
+  <span class="hljs-keyword">const</span> tree = evt.<span class="hljs-property">layer</span>.<span class="hljs-property">feature</span>;
+
+  <span class="hljs-keyword">const</span> treeSelectedEvent = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CustomEvent</span>(<span class="hljs-string">&#x27;tree-selected&#x27;</span>, { <span class="hljs-attr">detail</span>: { tree } });
+  <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">dispatchEvent</span>(treeSelectedEvent);
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">initMap</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">const</span> map = L.<span class="hljs-title function_">map</span>(<span class="hljs-string">&#x27;map&#x27;</span>, { <span class="hljs-attr">maxZoom</span>: <span class="hljs-number">22</span>, <span class="hljs-attr">preferCanvas</span>: <span class="hljs-literal">true</span> }).<span class="hljs-title function_">setView</span>([<span class="hljs-number">39.95</span>, -<span class="hljs-number">75.16</span>], <span class="hljs-number">13</span>);
+
+  <span class="hljs-keyword">const</span> mapboxAccount = <span class="hljs-string">&#x27;mapbox&#x27;</span>;
+  <span class="hljs-keyword">const</span> mapboxStyle = <span class="hljs-string">&#x27;light-v10&#x27;</span>;
+  <span class="hljs-keyword">const</span> mapboxToken = <span class="hljs-string">&#x27;pk.eyJ1IjoibWp1bWJlLXRlc3QiLCJhIjoiY2w3ZTh1NTIxMTgxNTQwcGhmODU2NW5kaSJ9.pBPd19nWO-Gt-vTf1pOHBA&#x27;</span>;
+  L.<span class="hljs-title function_">tileLayer</span>(<span class="hljs-string">`https://api.mapbox.com/styles/v1/<span class="hljs-subst">${mapboxAccount}</span>/<span class="hljs-subst">${mapboxStyle}</span>/tiles/256/{z}/{x}/{y}@2x?access_token=<span class="hljs-subst">${mapboxToken}</span>`</span>, {
+      <span class="hljs-attr">maxZoom</span>: <span class="hljs-number">19</span>,
+      <span class="hljs-attr">attribution</span>: <span class="hljs-string">&#x27;© &lt;a href=&quot;https://www.mapbox.com/about/maps/&quot;&gt;Mapbox&lt;/a&gt; © &lt;a href=&quot;http://www.openstreetmap.org/copyright&quot;&gt;OpenStreetMap&lt;/a&gt; &lt;strong&gt;&lt;a href=&quot;https://www.mapbox.com/map-feedback/&quot; target=&quot;_blank&quot;&gt;Improve this map&lt;/a&gt;&lt;/strong&gt;&#x27;</span>,
+  }).<span class="hljs-title function_">addTo</span>(map);
+
+  map.<span class="hljs-property">treeLayer</span> = L.<span class="hljs-title function_">geoJSON</span>(<span class="hljs-literal">null</span>, {
+    <span class="hljs-attr">pointToLayer</span>: <span class="hljs-function">(<span class="hljs-params">feature, latlng</span>) =&gt;</span> L.<span class="hljs-title function_">circleMarker</span>(latlng),
+    <span class="hljs-attr">style</span>: {
+      <span class="hljs-attr">fillColor</span>: <span class="hljs-string">&#x27;#83bf15&#x27;</span>,
+      <span class="hljs-attr">fillOpacity</span>: <span class="hljs-number">0.3</span>,
+      <span class="hljs-attr">stroke</span>: <span class="hljs-literal">false</span>,
+    },
+  }).<span class="hljs-title function_">addTo</span>(map);
+
+  map.<span class="hljs-property">treeLayer</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;click&#x27;</span>, onTreeClicked);
+
+  map.<span class="hljs-property">positionLayer</span> = L.<span class="hljs-title function_">geoJSON</span>(<span class="hljs-literal">null</span>).<span class="hljs-title function_">addTo</span>(map);
+
+  <span class="hljs-keyword">return</span> map;
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">updateUserPositionOn</span>(<span class="hljs-params">map, pos</span>) {
+  map.<span class="hljs-property">positionLayer</span>.<span class="hljs-title function_">addData</span>({
+    <span class="hljs-string">&#x27;type&#x27;</span>: <span class="hljs-string">&#x27;Point&#x27;</span>,
+    <span class="hljs-string">&#x27;coordinates&#x27;</span>: [pos.<span class="hljs-property">coords</span>.<span class="hljs-property">longitude</span>, pos.<span class="hljs-property">coords</span>.<span class="hljs-property">latitude</span>],
+  });
+  map.<span class="hljs-title function_">setView</span>([pos.<span class="hljs-property">coords</span>.<span class="hljs-property">latitude</span>, pos.<span class="hljs-property">coords</span>.<span class="hljs-property">longitude</span>], <span class="hljs-number">19</span>);
+}
+
+<span class="hljs-keyword">export</span> {
+  initMap,
+  updateUserPositionOn,
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

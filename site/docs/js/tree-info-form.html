@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>tree-info-form.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="inventory.html">
+                  js/inventory.js
+                </a>
+              
+                
+                <a class="source" href="main.html">
+                  js/main.js
+                </a>
+              
+                
+                <a class="source" href="map.html">
+                  js/map.js
+                </a>
+              
+                
+                <a class="source" href="toast.html">
+                  js/toast.js
+                </a>
+              
+                
+                <a class="source" href="tree-info-form.html">
+                  js/tree-info-form.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>tree-info-form.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="sswrap ">
+                <a class="ss" href="#section-1">&#x00a7;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> treeNameEl = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;tree-name&#x27;</span>);
+<span class="hljs-keyword">const</span> treeNotesEl = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;tree-notes&#x27;</span>);
+<span class="hljs-keyword">const</span> saveTreeNotesEl = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;save-tree-notes&#x27;</span>);
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">showTreeDataInForm</span>(<span class="hljs-params">tree, notes</span>) {
+  <span class="hljs-keyword">const</span> treeName = tree.<span class="hljs-property">properties</span>[<span class="hljs-string">&#x27;TREE_NAME&#x27;</span>];
+  treeNameEl.<span class="hljs-property">innerHTML</span> = treeName;
+  treeNotesEl.<span class="hljs-property">value</span> = notes;
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">onSaveButtonClicked</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">const</span> note = treeNotesEl.<span class="hljs-property">value</span>;
+  <span class="hljs-keyword">const</span> saveClickedEvent = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CustomEvent</span>(<span class="hljs-string">&#x27;save-clicked&#x27;</span>, { <span class="hljs-attr">detail</span>: { note } });
+  <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">dispatchEvent</span>(saveClickedEvent);
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">initTreeInfoForm</span>(<span class="hljs-params"></span>) {
+  saveTreeNotesEl.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;click&#x27;</span>, onSaveButtonClicked);
+}
+
+<span class="hljs-keyword">export</span> {
+  showTreeDataInForm,
+  initTreeInfoForm,
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
