@@ -1,3 +1,6 @@
+// Tree Inventory Surveying App
+// ============================
+
 import { initMap, updateUserPositionOn } from './map.js';
 import { initTreeInfoForm, showTreeDataInForm } from './tree-info-form.js';
 import { initToast, showToast } from './toast.js';
@@ -5,7 +8,7 @@ import { downloadInventory, loadNotes, saveNotes } from './inventory.js';
 
 let app = {
   currentTree: null,
-  notes: {},
+  notes: null,
 };
 
 const loadOverlayEl = document.getElementById('load-overlay');
