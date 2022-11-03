@@ -1,11 +1,14 @@
 // Tree Inventory Surveying App
 // ============================
 
-// The _main.js_ module defines the primary functionality of the app, and serves as the cross-component coordinator. Additional functionality is found in individual component modules:
+// The _main.js_ module defines the primary functionality of the app, and serves
+// as the cross-component coordinator. Additional functionality is found in
+// individual component modules:
 // * [map.js](map.html) for behavior related to the map
 // * [tree-info-form.js](tree-info-form.html) for form behavior
 // * [toast.js](toast.html) for the messages that get shown temporarily
-// * [inventory.js](inventory.html) for functions governing the loading/saving of tree inventory and notes
+// * [inventory.js](inventory.html) for functions governing the loading/saving
+//   of tree inventory and notes
 
 import { initMap, updateUserPositionOn } from './map.js';
 import { initTreeInfoForm, showTreeDataInForm } from './tree-info-form.js';
