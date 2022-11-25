@@ -1,24 +1,20 @@
 const treeNameEl = document.getElementById('tree-name');
 const treeNotesEl = document.getElementById('tree-notes');
-const saveTreeNotesEl = document.getElementById('save-tree-notes');
 
-function showTreeDataInForm(tree, notes) {
+function showTreeDataInForm(tree, app) {
   const treeName = tree.properties['TREE_NAME'];
+  const treeId = tree.properties['OBJECTID'];
+  const note = app.notes[treeId] || '';
   treeNameEl.innerHTML = treeName;
-  treeNotesEl.value = notes;
+  treeNotesEl.value = note;
 }
 
-function onSaveButtonClicked() {
+function getFormContent() {
   const note = treeNotesEl.value;
-  const saveClickedEvent = new CustomEvent('save-clicked', { detail: { note } });
-  window.dispatchEvent(saveClickedEvent);
-}
-
-function initTreeInfoForm() {
-  saveTreeNotesEl.addEventListener('click', onSaveButtonClicked);
+  return note;
 }
 
 export {
   showTreeDataInForm,
-  initTreeInfoForm,
+  getFormContent,
 };

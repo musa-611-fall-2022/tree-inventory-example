@@ -1,11 +1,3 @@
-function onTreeClicked(evt) {
-  console.log(evt);
-  const tree = evt.layer.feature;
-
-  const treeSelectedEvent = new CustomEvent('tree-selected', { detail: { tree } });
-  window.dispatchEvent(treeSelectedEvent);
-}
-
 function initMap() {
   const map = L.map('map', { maxZoom: 22, preferCanvas: true }).setView([39.95, -75.16], 13);
 
@@ -25,8 +17,6 @@ function initMap() {
       stroke: false,
     },
   }).addTo(map);
-
-  map.treeLayer.addEventListener('click', onTreeClicked);
 
   map.positionLayer = L.geoJSON(null).addTo(map);
 

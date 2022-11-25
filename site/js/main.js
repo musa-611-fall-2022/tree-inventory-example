@@ -11,9 +11,9 @@
 //   of tree inventory and notes
 
 import { initMap, updateUserPositionOn } from './map.js';
-import { initTreeInfoForm, showTreeDataInForm } from './tree-info-form.js';
+import { getFormContent, showTreeDataInForm } from './tree-info-form.js';
 import { initToast, showToast } from './toast.js';
-import { downloadInventory, loadNotes, saveNotes } from './inventory.js';
+import { downloadInventory, loadNotes, saveNote } from './inventory.js';
 
 // The state of the app is stored in a global `app` variable. The things that we
 // keep track of in this app state are:
@@ -29,6 +29,7 @@ let app = {
 };
 
 const loadOverlayEl = document.getElementById('load-overlay');
+const saveTreeNotesEl = document.getElementById('save-tree-notes');
 const map = initMap();
 
 // Define event handlers
@@ -41,26 +42,27 @@ function onInventoryLoadSuccess(data) {
   loadOverlayEl.classList.add('hidden');
 }
 
+// `onNoteSaveSuccess` will be called if and when the notes have been saved
+// to the cloud successfully.
+function onNotesSaveSuccess() {
+  showToast('Saved!', 'toast-success');
+}
+
 // `onSaveClicked` will be called if and when the save button on the tree info
 // form is clicked.
-function onSaveClicked(evt) {
-  const note = evt.detail.note;
+function onSaveClicked() {
+  const content = getFormContent();
   const treeId = app.currentTree.properties['OBJECTID'];
-  app.notes[treeId] = note;
 
-  saveNotes(app.notes);
-  showToast('Saved!', 'toast-success');
+  saveNote(treeId, content, app, onNotesSaveSuccess);
 }
 
 // `onTreeSelected` will be called if and when the user clicks on a tree on the
 // map.
 function onTreeSelected(evt) {
-  const tree = evt.detail.tree;
+  const tree = evt.layer.feature;
   app.currentTree = tree;
-
-  const treeId = tree.properties['OBJECTID'];
-  const notes = app.notes[treeId] || '';
-  showTreeDataInForm(tree, notes);
+  showTreeDataInForm(tree, app);
 }
 
 // **Geolocation** -- `onUserPositionSuccess` will be called by the geolocation
@@ -72,7 +74,7 @@ function onUserPositionSuccess(pos) {
 // **Geolocation** -- `onUserPositionSuccess` will be called by the geolocation
 // API if and when there is an error in finding the user's position.
 function onUserPositionFailure(err) {
-  console.log(err);
+  alert(`Oh man, we just failed to find the user's position: ${err}`);
 }
 
 // Define global interface setup
@@ -90,8 +92,8 @@ function setupGeolocationEvent() {
 }
 
 function setupInteractionEvents() {
-  window.addEventListener('tree-selected', onTreeSelected);
-  window.addEventListener('save-clicked', onSaveClicked);
+  map.treeLayer.addEventListener('click', onTreeSelected);
+  saveTreeNotesEl.addEventListener('click', onSaveClicked);
 }
 
 // Initialize the app components and events
@@ -103,14 +105,14 @@ function setupInteractionEvents() {
 // our user to be able to load/save any data before we actually have the
 // existing data loaded.
 
-initToast();
-initTreeInfoForm();
+downloadInventory(onInventoryLoadSuccess);
+
+setupInteractionEvents();
 setupGeolocationEvent();
 
 loadNotes(notes => {
   app.notes = notes;
-  setupInteractionEvents();
 });
-downloadInventory(onInventoryLoadSuccess);
+initToast();
 
 window.app = app;

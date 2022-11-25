@@ -14,26 +14,24 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const firestoreDb = getFirestore(firebaseApp);
 
-function downloadInventory(onSuccess, onFailure) {
-  fetch('data/tree-inventory.geojson')
-  .then(resp => {
-    if (resp.status === 200) {
-      const data = resp.json();
-      return data;
-    } else {
-      alert('Oh no, I failed to download the data.');
-      if (onFailure) { onFailure() }
-    }
-  })
-  .then(onSuccess);
+async function downloadInventory(onSuccess, onFailure) {
+  const resp = await fetch('data/tree-inventory.geojson');
+  if (resp.status === 200) {
+    const data = await resp.json();
+    if (onSuccess) { onSuccess(data) }
+  } else {
+    alert('Oh no, I failed to download the data.');
+    if (onFailure) { onFailure() }
+  }
 }
 
 async function loadNotes(onSuccess, onFailure) {
   try {
+    // const notes = JSON.parse(localStorage.getItem('notes'));
     const notesDoc = doc(firestoreDb, "tree-inventory-notes", "notes");
     const result = await getDoc(notesDoc);
-    const notes = result.data().notes;
-    localStorage.setItem('notes', JSON.stringify(notes));
+    const docData = result.data() || {};
+    const notes = docData.content || {};
     onSuccess(notes);
   } catch {
     if (onFailure) {
@@ -42,20 +40,31 @@ async function loadNotes(onSuccess, onFailure) {
   }
 }
 
-async function saveNotes(notes, onSuccess, onFailure) {
+async function saveNote(treeId, note, app, onSuccess, onFailure) {
+  // Save in memory
+  app.notes[treeId] = note;
+  /*
+    For example, app.notes might look something like this...
+
+    app.notes = {
+      "1": "this is the note for tree 1",
+      "56": "this is the note for tree 56",
+      "8235": "this is the note for tree 8235"
+    }
+  */
+
   // Save locally.
-  localStorage.setItem('notes', JSON.stringify(notes));
+  // localStorage.setItem('notes', JSON.stringify(app.notes));
 
   // Save in the cloud.
   try {
     const notesDoc = doc(firestoreDb, "tree-inventory-notes", "notes");
-    await setDoc(notesDoc, { notes });
-    console.log("Document written with ID: ", notesDoc.id);
+    await setDoc(notesDoc, { content: app.notes });
     if (onSuccess) {
       onSuccess(notesDoc);
     }
   } catch (e) {
-    console.error("Error adding document: ", e);
+    alert(`Shoot, I failed to save the notes in firestore. ${e}`);
     if (onFailure) {
       onFailure(e);
     }
@@ -65,5 +74,5 @@ async function saveNotes(notes, onSuccess, onFailure) {
 export {
   downloadInventory,
   loadNotes,
-  saveNotes,
+  saveNote,
 };
