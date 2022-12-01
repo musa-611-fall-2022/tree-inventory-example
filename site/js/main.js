@@ -69,6 +69,11 @@ function onTreeSelected(evt) {
 // API if and when the user's position is successfully found.
 function onUserPositionSuccess(pos) {
   updateUserPositionOn(map, pos);
+  downloadInventory(
+    pos.coords.longitude,
+    pos.coords.latitude,
+    onInventoryLoadSuccess,
+  );
 }
 
 // **Geolocation** -- `onUserPositionSuccess` will be called by the geolocation
@@ -104,8 +109,6 @@ function setupInteractionEvents() {
 // until the notes are loaded from the remote data store, because we don't want
 // our user to be able to load/save any data before we actually have the
 // existing data loaded.
-
-downloadInventory(onInventoryLoadSuccess);
 
 setupInteractionEvents();
 setupGeolocationEvent();

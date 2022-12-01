@@ -14,8 +14,10 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const firestoreDb = getFirestore(firebaseApp);
 
-async function downloadInventory(onSuccess, onFailure) {
-  const resp = await fetch('data/tree-inventory.geojson');
+async function downloadInventory(lng, lat, onSuccess, onFailure) {
+  const resp = await fetch(`http://localhost:3000/ll/${lng}/${lat}`, {
+    method: 'POST',
+  });
   if (resp.status === 200) {
     const data = await resp.json();
     if (onSuccess) { onSuccess(data) }
